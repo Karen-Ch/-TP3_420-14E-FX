@@ -1,0 +1,130 @@
+﻿<UserControl x:Class="Seismoscope.View.CapteurView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Seismoscope.View"
+        mc:Ignorable="d"
+        Height="600" Width="800">
+
+    <UserControl.Resources>
+        <Style x:Key="TitleStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="Foreground" Value="#303F9F"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,15,0,25"/>
+        </Style>
+        
+        <Style x:Key="LabelTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,5,0,3"/>
+            <Setter Property="Foreground" Value="#404040"/>
+        </Style>
+        
+        <Style x:Key="InfoTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="5,3,5,10"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Background" Value="#F5F5F5"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        
+        <Style x:Key="InputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="0,3,0,12"/>
+            <Setter Property="BorderBrush" Value="#BDBDBD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="20,5"/>
+            <Setter Property="Margin" Value="10,0"/>
+            <Setter Property="Background" Value="#3F51B5"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#303F9F"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#1A237E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="White">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20">
+                <TextBlock Text="Modifier Capteur" Style="{StaticResource TitleStyle}"/>
+                
+                <Border Background="#FFFFFF" Margin="0,10,0,20" Padding="20">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Nom : " Style="{StaticResource LabelTextBlockStyle}" FontWeight="Bold" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Nom}" Style="{StaticResource InfoTextBlockStyle}" FontWeight="Bold" />
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Type : " Style="{StaticResource LabelTextBlockStyle}" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Type}" Style="{StaticResource InfoTextBlockStyle}" />
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Statut : " Style="{StaticResource LabelTextBlockStyle}" />
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Statut}" Style="{StaticResource InfoTextBlockStyle}" />
+                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Fréquence actuelle : " Style="{StaticResource LabelTextBlockStyle}" />
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding FrequenceCollecte, StringFormat={}{0} Hz}" Style="{StaticResource InfoTextBlockStyle}" />
+                        
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="Seuil actuel : " Style="{StaticResource LabelTextBlockStyle}" />
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SeuilAlerte, StringFormat={}{0} mm}" Style="{StaticResource InfoTextBlockStyle}" />
+                        
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="Installé le : " Style="{StaticResource LabelTextBlockStyle}" />
+                        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding DateInstallation, StringFormat={}{0:d}}" Style="{StaticResource InfoTextBlockStyle}" />
+                        
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="Désactivé : " Style="{StaticResource LabelTextBlockStyle}" />
+                        <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding EstDesactive}" Style="{StaticResource InfoTextBlockStyle}" />
+                    </Grid>
+                </Border>
+
+                <Border Background="#F9FAFC" Margin="0,0,0,20" Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="Modifications" FontWeight="Bold" FontSize="18" Foreground="#303F9F" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="Nouvelle fréquence de collecte (Hz)" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <TextBox Text="{Binding FrequenceCollecte, UpdateSourceTrigger=PropertyChanged}" 
+                                Style="{StaticResource InputTextBoxStyle}"/>
+
+                        <TextBlock Text="Nouveau seuil d'alerte (mm)" Style="{StaticResource LabelTextBlockStyle}"/>
+                        <TextBox Text="{Binding SeuilAlerte, UpdateSourceTrigger=PropertyChanged}" 
+                                Style="{StaticResource InputTextBoxStyle}"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,20">
+                    <Button Content="Activer / Désactiver" 
+                            Command="{Binding ToggleActivationCommand}" 
+                            Style="{StaticResource ButtonStyle}"/>
+                    
+                    <Button Content="Sauvegarder" 
+                            Command="{Binding SauvegarderModificationsCommand}" 
+                            Style="{StaticResource ButtonStyle}"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

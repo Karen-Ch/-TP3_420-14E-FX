@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Seismoscope.View.ConnectView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Seismoscope.View"
+             xmlns:utils="clr-namespace:Seismoscope.Utils.AttachedProperties"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid Background="WhiteSmoke">
+        <StackPanel 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+            <Label 
+                Margin="15 15 15 2"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Content="Nom d'utilisateur" Width="200"/>
+            <TextBox 
+                Margin="2 15 15 15"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Text="{Binding NomUtilisateur, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+            <Label 
+                Margin="15 15 15 5"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                Content="Mot de passe" 
+                Width="200"/>
+            <PasswordBox 
+                Width="200" 
+                Margin="5 15 15 15"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                         utils:PasswordBoxAssistant.BoundPassword="{Binding MotDePasse, Mode=TwoWay}" />
+
+            <TextBlock Text="{Binding ErrorMessages}" 
+                       Foreground="Red" 
+                       HorizontalAlignment="Center" 
+                       TextWrapping="Wrap"
+                       Margin="10"/>
+
+            <Button Content="Connexion" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center"
+                    Width="200" 
+                    Margin="2 15 15 15"
+                    Background="DarkGoldenrod"
+                    Command="{Binding ConnectCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,2 +1,6 @@
 # -TP3_420-14E-FX
-SéismoScope
+# Seismoscope
+-----------------------------
+Membres de l'équipe:
+* Ahmed Ezzi
+* Karen Dos Santos Charret
