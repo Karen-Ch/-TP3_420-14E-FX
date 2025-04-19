@@ -10,6 +10,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Station> Stations { get; set; } = null!;
     public DbSet<Capteur> Capteurs { get; set; } = null!;
+    public DbSet<EvenementSismique> Evenements { get; set; }
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : base(options)
     {
