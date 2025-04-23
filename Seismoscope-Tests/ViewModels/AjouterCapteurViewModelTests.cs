@@ -14,7 +14,7 @@ public class AjouterCapteurViewModelTests
     private Mock<INavigationService> _navigationMock;
     private Mock<IDialogService> _dialogServiceMock;
 
-    private AjouterCapteurViewModel _viewModel;
+    private DonneesCapteurViewModel _viewModel;
 
     [SetUp]
     public void Setup()
@@ -43,7 +43,7 @@ public class AjouterCapteurViewModelTests
         _navigationMock = new Mock<INavigationService>();
         _dialogServiceMock = new Mock<IDialogService>();
 
-        _viewModel = new AjouterCapteurViewModel(
+        _viewModel = new DonneesCapteurViewModel(
             _userSessionMock.Object,
             _navigationMock.Object,
             _capteurServiceMock.Object,

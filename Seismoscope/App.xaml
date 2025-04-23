@@ -26,7 +26,10 @@
             <DataTemplate DataType="{x:Type TypeName=viewModel:CapteurViewModel}">
                 <view:CapteurView/>
             </DataTemplate>
-            
+            <DataTemplate DataType="{x:Type TypeName=viewModel:DonneesCapteurViewModel}">
+                <view:DonneesCapteurView/>
+            </DataTemplate>
+
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         </ResourceDictionary>
     </Application.Resources>

@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Seismoscope.ViewModel
 {
-    public class AjouterCapteurViewModel : BaseViewModel
+    public class DonneesCapteurViewModel : BaseViewModel
     {
         private readonly IUserSessionService _userSession;
         private readonly INavigationService _navigationService;
@@ -28,7 +28,7 @@ namespace Seismoscope.ViewModel
         public int NouveauStationId { get; set; }
         public ICommand ValiderCapteurCommand { get; }
 
-        public AjouterCapteurViewModel(IUserSessionService userSession,
+        public DonneesCapteurViewModel(IUserSessionService userSession,
             INavigationService navigationService,
             ICapteurService capteurService,
             IStationService stationService,
