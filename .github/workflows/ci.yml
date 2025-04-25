@@ -1,4 +1,4 @@
-name: Intégration en continu de PersonWPF
+name: Intégration en continu de Seismoscope
 
 on:
   pull_request:
