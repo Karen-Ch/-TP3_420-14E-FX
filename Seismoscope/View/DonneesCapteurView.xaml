@@ -3,27 +3,63 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Seismoscope.View"
-        mc:Ignorable="d"
+        xmlns:local="clr-namespace:Seismoscope.View" xmlns:viewmodel="clr-namespace:Seismoscope.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:DonneesCapteurViewModel}"
+             mc:Ignorable="d"
         Height="450" Width="800">
     <StackPanel  Background="WhiteSmoke">
-        <TextBlock Margin="30" 
-                   Text="Ajouter Capteur" 
-                   HorizontalAlignment="Center" 
-                   VerticalAlignment="Center" 
-                   FontWeight="Bold" />
-        <ComboBox 
-            Margin="30" 
-            Height="30" Width="450"
-            ItemsSource="{Binding Capteurs}" 
-            DisplayMemberPath="Nom" 
-            SelectedItem="{Binding CapteurSelectionne}" />
+        
+        <TextBlock Margin="30"
+           Text="{Binding Nom, StringFormat=Données du Capteur {0}}"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"
+           FontWeight="Bold" />
 
-        <Button 
-            Height="30" Width="350"
-            Margin="50" 
-            Content="Valider" 
-            Command="{Binding VerifierCapteurCommand}" />
+        <StackPanel Margin="10">
+           <!-- <DataGrid Width="300" ItemsSource="{Binding CsvDonnees}"  Margin="5" AutoGenerateColumns="True"/> -->
+            <Button Width="300" Content="Sélectionnez" Command="{Binding LireCSVCommand}"  Margin="5"/>
+        </StackPanel>
+        
+        <Grid Margin="20" Width="742">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="5*" />
+                    
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="{Binding Type, StringFormat=Type d’onde : {0}}" Margin="10"/>
+                <TextBlock Grid.Row="1" Text="{Binding Amplitude, StringFormat=Amplitude : {0} mm}" Margin="10"/>
+                <StackPanel Grid.Row="2" Margin="5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Margin="5" 
+                                Grid.Column="0" 
+                                Content="Lire" 
+                                Command="{Binding CommencerLectureCommand}"
+                                 IsEnabled="{Binding PeutCommencerLecture}"
+                                Width="200" />
+                        <Button Margin="5" Grid.Column="1" Content="Annuler"/>
+                    </Grid>
+                </StackPanel>
+                <TextBlock FontWeight="Bold" Grid.Row="3" Text="Graphique" Margin="10"/>
+                <TextBlock Grid.Row="4" Text="Graphique réel" Margin="10"/>
+            </Grid>
+            <StackPanel Grid.Column="1" Background="Snow" Margin="10,0,61,-44" RenderTransformOrigin="0.555,0.759">
+
+                <TextBlock Text="Journalisation" Margin="10"/>
+            </StackPanel>
+
+        </Grid>
     </StackPanel>
     
 </UserControl>
