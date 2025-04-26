@@ -36,6 +36,7 @@ namespace Seismoscope
             services.AddSingleton<CarteViewModel>(); 
             services.AddSingleton<StationViewModel>();
             services.AddSingleton<CapteurViewModel>();
+            services.AddSingleton<DonneesCapteurViewModel>();
             services.AddSingleton<IStationService, StationService>();
             services.AddSingleton<ICapteurService, CapteurService>();
             services.AddSingleton<IUserSessionService, UserSessionService>();

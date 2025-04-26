@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Seismoscope.View
 {
     /// <summary>
-    /// Logique d'interaction pour AjouterCapteurView.xaml
+    /// Logique de visualization de donnes pour DonneesCapteurView.xaml
     /// </summary>
-    public partial class AjouterCapteurView : Window
+    public partial class DonneesCapteurView : UserControl
     {
-        public AjouterCapteurView()
+        public DonneesCapteurView()
         {
             InitializeComponent();
         }
