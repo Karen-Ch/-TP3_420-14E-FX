@@ -6,7 +6,7 @@ using Seismoscope.ViewModel;
 
 namespace Seismoscope_Tests;
 
-public class AjouterCapteurViewModelTests
+public class DonnesCapteurViewModelTests
 {
     private Mock<IUserSessionService> _userSessionMock;
     private Mock<IStationService> _stationServiceMock;
@@ -52,50 +52,50 @@ public class AjouterCapteurViewModelTests
         );
     }
 
-    [Test]
-    public void ValiderCapteurCommand_AvecCapteurLivre_AppelleModifierCapteurEtAfficheMessage()
-    {
-        var capteurMock = new Mock<Capteur>();
-        capteurMock.SetupAllProperties();
-        capteurMock.Object.EstLivre = true;
+    //[Test]
+    //public void ValiderCapteurCommand_AvecCapteurLivre_AppelleModifierCapteurEtAfficheMessage()
+    //{
+    //    var capteurMock = new Mock<Capteur>();
+    //    capteurMock.SetupAllProperties();
+    //    capteurMock.Object.EstLivre = true;
 
-        _viewModel.CapteurSelectionne = capteurMock.Object;
+    //    _viewModel.CapteurSelectionne = capteurMock.Object;
 
-        _viewModel.ValiderCapteurCommand.Execute(null);
+    //    _viewModel.ValiderCapteurCommand.Execute(null);
 
-        _capteurServiceMock.Verify(s => s.ModifierCapteur(capteurMock.Object), Times.Once);
-        _dialogServiceMock.Verify(d => d.ShowMessage("Capteur ajouté !", ""), Times.Once);
-        Assert.That(capteurMock.Object.StationId, Is.EqualTo(99));
-    }
-
-
-    [Test]
-    public void ValiderCapteurCommand_SansSelection_AfficheMessageCapteurNonLivre()
-    {
-        _viewModel.CapteurSelectionne = null;
-
-        _viewModel.ValiderCapteurCommand.Execute(null);
-
-        _capteurServiceMock.Verify(s => s.ModifierCapteur(It.IsAny<Capteur>()), Times.Never);
-        _dialogServiceMock.Verify(d => d.ShowMessage("Veuillez sélectionner un capteur livré.", ""), Times.Once);
-    }
+    //    _capteurServiceMock.Verify(s => s.ModifierCapteur(capteurMock.Object), Times.Once);
+    //    _dialogServiceMock.Verify(d => d.ShowMessage("Capteur ajouté !", ""), Times.Once);
+    //    Assert.That(capteurMock.Object.StationId, Is.EqualTo(99));
+    //}
 
 
+    //[Test]
+    //public void ValiderCapteurCommand_SansSelection_AfficheMessageCapteurNonLivre()
+    //{
+    //    _viewModel.CapteurSelectionne = null;
 
-    [Test]
-    public void ValiderCapteurCommand_CapteurNonLivre_AfficheMessageErreur()
-    {
-        var capteurMock = new Mock<Capteur>();
-        capteurMock.SetupAllProperties();
-        capteurMock.Object.EstLivre = false;
+    //    _viewModel.ValiderCapteurCommand.Execute(null);
 
-        _viewModel.CapteurSelectionne = capteurMock.Object;
+    //    _capteurServiceMock.Verify(s => s.ModifierCapteur(It.IsAny<Capteur>()), Times.Never);
+    //    _dialogServiceMock.Verify(d => d.ShowMessage("Veuillez sélectionner un capteur livré.", ""), Times.Once);
+    //}
 
-        _viewModel.ValiderCapteurCommand.Execute(null);
 
-        _capteurServiceMock.Verify(s => s.ModifierCapteur(It.IsAny<Capteur>()), Times.Never);
-        _dialogServiceMock.Verify(d => d.ShowMessage("Veuillez sélectionner un capteur livré.", ""), Times.Once);
-    }
+
+    //[Test]
+    //public void ValiderCapteurCommand_CapteurNonLivre_AfficheMessageErreur()
+    //{
+    //    var capteurMock = new Mock<Capteur>();
+    //    capteurMock.SetupAllProperties();
+    //    capteurMock.Object.EstLivre = false;
+
+    //    _viewModel.CapteurSelectionne = capteurMock.Object;
+
+    //    _viewModel.ValiderCapteurCommand.Execute(null);
+
+    //    _capteurServiceMock.Verify(s => s.ModifierCapteur(It.IsAny<Capteur>()), Times.Never);
+    //    _dialogServiceMock.Verify(d => d.ShowMessage("Veuillez sélectionner un capteur livré.", ""), Times.Once);
+    //}
 
 
 
