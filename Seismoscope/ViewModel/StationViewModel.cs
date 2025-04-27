@@ -40,8 +40,9 @@ namespace Seismoscope.ViewModel
         public ICommand ModifierCapteurCommand { get; }
         public ICommand EffacerCapteurCommand { get; }
         public ICommand AjouterCapteurCommand { get; }
-        public ICommand AllerVersHistoriqueCommand { get; }
 
+        public ICommand AllerVersHistoriqueCommand { get; }
+        public ICommand VerifierCapteurCommand { get; }
         public Capteur CapteurSelectionne { get; set; }
         public Station NouvelleStation { get; set; }
         public int NouveauStationId { get; set; }
@@ -72,6 +73,11 @@ namespace Seismoscope.ViewModel
             ModifierCapteurCommand = new RelayCommand<Capteur>(capteur =>
             {
                 _navigationService.NavigateTo<CapteurViewModel>(capteur.Id);
+            });
+
+            VerifierCapteurCommand = new RelayCommand<Capteur>(capteur =>
+            {
+                _navigationService.NavigateTo<DonneesCapteurViewModel>(capteur.Id);
             });
 
             EffacerCapteurCommand = new RelayCommand<Capteur>(capteur =>

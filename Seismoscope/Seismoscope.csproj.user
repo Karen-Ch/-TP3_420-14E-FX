@@ -10,7 +10,7 @@
     <Compile Update="ViewModel\CapteurViewModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\AjouterCapteurView.xaml.cs">
+    <Compile Update="View\DonneesCapteurView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="View\CarteView.xaml.cs">
@@ -30,7 +30,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="View\AjouterCapteurView.xaml">
+    <Page Update="View\DonneesCapteurView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\CapteurView.xaml">
