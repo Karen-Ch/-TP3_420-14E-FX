@@ -40,6 +40,8 @@ namespace Seismoscope.ViewModel
         public ICommand ModifierCapteurCommand { get; }
         public ICommand EffacerCapteurCommand { get; }
         public ICommand AjouterCapteurCommand { get; }
+        public ICommand AllerVersHistoriqueCommand { get; }
+
         public Capteur CapteurSelectionne { get; set; }
         public Station NouvelleStation { get; set; }
         public int NouveauStationId { get; set; }
@@ -131,6 +133,11 @@ namespace Seismoscope.ViewModel
                 CapteurSelectionne = null;
                 OnPropertyChanged(nameof(CapteurSelectionne));
             });
+            AllerVersHistoriqueCommand = new RelayCommand(() =>
+            {
+                _navigationService.NavigateTo<HistoriqueEvenementsViewModel>();
+            });
+
         }
 
         public void Receive(object parameter)
