@@ -61,7 +61,6 @@ namespace Seismoscope.ViewModel
 
 
             Capteurs = new ObservableCollection<Capteur>(_capteurService.ObtenirTous());
-            NouveauStationId = (int)_userSession.ConnectedUser.StationId;
 
             LireCSVCommand = new RelayCommand(LireCsv);
             CommencerLectureCommand = new RelayCommand(async () => await LancerLectureAsync());
@@ -100,7 +99,7 @@ namespace Seismoscope.ViewModel
                     if (values != null && values[0] is string) {
                         donnees.Add(Tuple.Create(
                         values[0].Trim(),
-                        double.Parse(values[1].Trim())));
+                       double.Parse(values[1].Trim(), System.Globalization.CultureInfo.InvariantCulture)));
                     }
                 }
             }
@@ -113,9 +112,11 @@ namespace Seismoscope.ViewModel
                 var capteur = _capteurService.ObtenirParId(capteurId);
                 if (capteur != null)
                 {
+                    CapteurSelectionne = capteur;
                     Nom = capteur.Nom;
                     Intervalle = capteur.FrequenceCollecte;
-  
+                    NouveauStationId = capteur.StationId ?? 0;
+
                     OnPropertyChanged(nameof(Nom));
                 }
             }
@@ -159,6 +160,8 @@ namespace Seismoscope.ViewModel
             };
 
             _evenementService.AjouterEvenement(evenement);
+            if (_navigationService.CurrentView is HistoriqueEvenementsViewModel historiqueVm)
+                historiqueVm.Rafraichir();
         }
     }
 }

@@ -20,6 +20,8 @@ namespace Seismoscope.ViewModel
         private readonly INavigationService _navigationService;
         private readonly IDialogService _dialogService;
 
+        private int? _stationIdActuelle;
+
         public ObservableCollection<EvenementSismique> Evenements { get; private set; } = new();
         public ObservableCollection<EvenementSismique> TousEvenements { get; private set; } = new();
 
@@ -43,26 +45,38 @@ namespace Seismoscope.ViewModel
             ReinitialiserFiltreCommand = new RelayCommand(ReinitialiserFiltre);
         }
 
+
         public void Receive(object parameter)
         {
-            ChargerEvenements();
+            if (parameter is int stationId)
+            {
+                _stationIdActuelle = stationId;
+                ChargerEvenements(stationId);
+            }
         }
 
-        private void ChargerEvenements()
+        public void Rafraichir()
         {
-            if (_userSessionService.ConnectedUser == null || _userSessionService.ConnectedUser.StationId == null)
-                return;
+            if (_stationIdActuelle != null)
+                ChargerEvenements(_stationIdActuelle.Value);
+        }
 
+        private void ChargerEvenements(int stationId)
+        {
             TousEvenements.Clear();
             Evenements.Clear();
 
-            var evenements = _evenementService.ObtenirParStation(_userSessionService.ConnectedUser.StationId.Value);
+            var evenements = _evenementService.ObtenirParStation(stationId);
 
             foreach (var evenement in evenements)
             {
                 TousEvenements.Add(evenement);
                 Evenements.Add(evenement);
             }
+
+            OnPropertyChanged(nameof(TousEvenements));
+            OnPropertyChanged(nameof(Evenements));
+
         }
 
 
