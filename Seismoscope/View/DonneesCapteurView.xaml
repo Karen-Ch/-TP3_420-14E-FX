@@ -3,65 +3,259 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Seismoscope.View" xmlns:viewmodel="clr-namespace:Seismoscope.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:DonneesCapteurViewModel}"
-             mc:Ignorable="d"
-        Height="450" Width="800">
-    <StackPanel  Background="WhiteSmoke">
-        
-        <TextBlock Margin="30"
-           Text="{Binding Nom, StringFormat=Données du Capteur {0}}"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center"
-           FontWeight="Bold" />
-
-        <StackPanel Margin="10">
-           <!-- <DataGrid Width="300" ItemsSource="{Binding CsvDonnees}"  Margin="5" AutoGenerateColumns="True"/> -->
-            <Button Width="300" Content="Sélectionnez" Command="{Binding LireCSVCommand}"  Margin="5"/>
-        </StackPanel>
-        
-        <Grid Margin="20" Width="742">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" Background="White">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="5*" />
-                    
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Text="{Binding Type, StringFormat=Type d’onde : {0}}" Margin="10"/>
-                <TextBlock Grid.Row="1" Text="{Binding Amplitude, StringFormat=Amplitude : {0} mm}" Margin="10"/>
-                <StackPanel Grid.Row="2" Margin="5">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Button Margin="5" 
-                                Grid.Column="0" 
-                                Content="Lire" 
-                                Command="{Binding CommencerLectureCommand}"
-                                 IsEnabled="{Binding PeutCommencerLecture}"
-                                Width="200" />
-                        <Button Margin="5" Grid.Column="1" Content="Annuler"/>
-                    </Grid>
-                </StackPanel>
-                <TextBlock FontWeight="Bold" Grid.Row="3" Text="Graphique" Margin="10"/>
-                <TextBlock Grid.Row="4" Text="Graphique réel" Margin="10"/>
-            </Grid>
-            <StackPanel Grid.Column="1" Background="Snow" Margin="10,0,61,-44" RenderTransformOrigin="0.555,0.759">
-
-                <TextBlock Text="Journalisation" Margin="10"/>
-            </StackPanel>
-
-        </Grid>
-    </StackPanel>
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:local="clr-namespace:Seismoscope.View" 
+        xmlns:viewmodel="clr-namespace:Seismoscope.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodel:DonneesCapteurViewModel}"
+        mc:Ignorable="d"
+        Height="Auto" Width="Auto">
     
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="HeaderBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#673AB7" Offset="0"/>
+            <GradientStop Color="#4527A0" Offset="1"/>
+        </LinearGradientBrush>
+        
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="TitleTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        
+        <Style x:Key="SubtitleTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Opacity" Value="0.8"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+        
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+            <Setter Property="Foreground" Value="#424242"/>
+        </Style>
+        
+        <Style x:Key="LabelTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Opacity" Value="0.7"/>
+            <Setter Property="Foreground" Value="#424242"/>
+        </Style>
+        
+        <Style x:Key="ValueTextStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#424242"/>
+        </Style>
+        
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#673AB7"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5E35B1"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#BDBDBD"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="CircleButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="48"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="Background" Value="#673AB7"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="24">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5E35B1"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#BDBDBD"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="StopButtonStyle" TargetType="Button" BasedOn="{StaticResource CircleButtonStyle}">
+            <Setter Property="Background" Value="#F44336"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E53935"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="ChartStyle" TargetType="lvc:CartesianChart">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#424242"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="AnimationsSpeed" Value="0:0:0.5"/>
+            <Setter Property="DisableAnimations" Value="False"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Auto"
+                      PanningMode="Both">
+            <Border Margin="16" CornerRadius="8" Background="#F5F5F5">
+                <Grid MinWidth="880">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Background="{StaticResource HeaderBrush}" CornerRadius="8,8,0,0" Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Nom, StringFormat=Capteur {0}}"
+                                   Style="{StaticResource TitleTextStyle}"/>
+                            <TextBlock Text="Système de surveillance sismique" 
+                                   Style="{StaticResource SubtitleTextStyle}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="1" Style="{StaticResource CardStyle}" Margin="8,8,8,4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Grid Grid.Column="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Column="0" 
+                                         FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" Margin="0,0,24,0">
+                                    <TextBlock Text="Type d'onde" Style="{StaticResource LabelTextStyle}"/>
+                                    <TextBlock Text="{Binding Type}" Style="{StaticResource ValueTextStyle}"/>
+                                </StackPanel>
+
+                                <TextBlock Grid.Column="2" 
+                                         FontSize="20" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="3">
+                                    <TextBlock Text="Amplitude" Style="{StaticResource LabelTextStyle}"/>
+                                    <TextBlock Text="{Binding Amplitude, StringFormat={}{0} mm}" Style="{StaticResource ValueTextStyle}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Style="{StaticResource PrimaryButtonStyle}"
+                                        Content="SÉLECTIONNER CSV"
+                                        Command="{Binding LireCSVCommand}"
+                                        Margin="0,0,16,0"
+                                        VerticalAlignment="Center"/>
+                                
+                                <Button Style="{StaticResource CircleButtonStyle}"
+                                        Command="{Binding CommencerLectureCommand}"
+                                        IsEnabled="{Binding PeutCommencerLecture}"
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        ToolTip="Démarrer la lecture">
+                                    <TextBlock Text="▶" FontSize="20"/>
+                                </Button>
+                                
+                                <Button Style="{StaticResource StopButtonStyle}"
+                                        Command="{Binding ArreterLectureCommand}"
+                                        Margin="8,0,0,0"
+                                        VerticalAlignment="Center"
+                                        ToolTip="Arrêter la lecture">
+                                    <TextBlock Text="■" FontSize="20"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="2" Style="{StaticResource CardStyle}" Margin="8,4,8,8">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Text="GRAPHIQUE DE L'ACTIVITÉ SISMIQUE" 
+                                       Style="{StaticResource SectionTitleStyle}"
+                                       Grid.Row="0"
+                                       Margin="0,0,0,16"/>
+                            
+                            <lvc:CartesianChart Grid.Row="1"
+                                                Style="{StaticResource ChartStyle}"
+                                                Series="{Binding Series}"
+                                                LegendLocation="Right"
+                                                MinHeight="300">
+                                <lvc:CartesianChart.AxisX>
+                                    <lvc:Axis Title="Temps (s)"
+                                            Labels="{Binding LabelsTemps}"
+                                            Foreground="#424242"
+                                            FontSize="12">
+                                        <lvc:Axis.Separator>
+                                            <lvc:Separator StrokeThickness="1" Stroke="#EEEEEE"/>
+                                        </lvc:Axis.Separator>
+                                    </lvc:Axis>
+                                </lvc:CartesianChart.AxisX>
+                                <lvc:CartesianChart.AxisY>
+                                    <lvc:Axis Title="Amplitude (mm)"
+                                            Foreground="#424242"
+                                            FontSize="12">
+                                        <lvc:Axis.Separator>
+                                            <lvc:Separator StrokeThickness="1" Stroke="#EEEEEE"/>
+                                        </lvc:Axis.Separator>
+                                    </lvc:Axis>
+                                </lvc:CartesianChart.AxisY>
+                                <lvc:CartesianChart.DataTooltip>
+                                    <lvc:DefaultTooltip Background="#FAFAFA" 
+                                                        BorderBrush="#E0E0E0"
+                                                        Foreground="#424242"
+                                                        SelectionMode="SharedXValues"/>
+                                </lvc:CartesianChart.DataTooltip>
+                            </lvc:CartesianChart>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </ScrollViewer>
+    </Grid>
 </UserControl>
-
-    

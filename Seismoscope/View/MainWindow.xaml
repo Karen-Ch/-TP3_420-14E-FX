@@ -46,6 +46,6 @@
                     Command="{Binding NavigateToConnectUserViewCommand}"
                     Visibility="{Binding UserSessionService.IsUserDisconnected, Converter={StaticResource BoolToVisibilityConverter}}"/>
         </StackPanel>
-        <ContentControl Grid.Column="1" Content="{Binding NavigationService.CurrentView}" HorizontalAlignment="Center" Width="674" Grid.RowSpan="2"></ContentControl>
+        <ContentControl Grid.Column="1" Content="{Binding NavigationService.CurrentView}" HorizontalAlignment="Stretch"  Grid.RowSpan="2"></ContentControl>
     </Grid>
 </Window>
