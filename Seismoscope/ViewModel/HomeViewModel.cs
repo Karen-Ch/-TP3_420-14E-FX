@@ -36,17 +36,17 @@ namespace Seismoscope.ViewModel
             LogoutCommand = new RelayCommand(Logout, CanLogout);
         }
 
-        // Commande pour la déconnexion
+   
         public ICommand LogoutCommand { get; set; }
 
-        // Méthode pour gérer la déconnexion de l'utilisateur
+
         private void Logout()
         {
             _userSessionService.ConnectedUser = null;
             _navigationService.NavigateTo<ConnectUserViewModel>();
         }
 
-        // Vérifie si la commande de déconnexion peut être exécutée
+
         private bool CanLogout()
         {
             return _userSessionService.IsUserConnected;

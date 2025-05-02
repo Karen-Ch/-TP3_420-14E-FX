@@ -8,13 +8,13 @@
         Height="450" Width="800">
     <StackPanel  Background="WhiteSmoke">
         
-        <TextBlock Margin="30"
+        <TextBlock Margin="20, 20, 70, 20"
            Text="{Binding Nom, StringFormat=Données du Capteur {0}}"
            HorizontalAlignment="Center"
            VerticalAlignment="Center"
            FontWeight="Bold" />
 
-        <StackPanel Margin="10">
+        <StackPanel Margin="5">
            <!-- <DataGrid Width="300" ItemsSource="{Binding CsvDonnees}"  Margin="5" AutoGenerateColumns="True"/> -->
             <Button Width="300" Content="Sélectionnez" Command="{Binding LireCSVCommand}"  Margin="5"/>
         </StackPanel>
@@ -44,8 +44,11 @@
                                 Content="Lire" 
                                 Command="{Binding CommencerLectureCommand}"
                                  IsEnabled="{Binding PeutCommencerLecture}"
-                                Width="200" />
-                        <Button Margin="5" Grid.Column="1" Content="Annuler"/>
+                                Width="230" />
+                        <Button Margin="5" 
+                                Grid.Column="1" 
+                                Content="Annuler"
+                                Width="230"/>
                     </Grid>
                 </StackPanel>
                 <TextBlock FontWeight="Bold" Grid.Row="3" Text="Graphique" Margin="10"/>

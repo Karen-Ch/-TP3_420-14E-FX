@@ -19,18 +19,15 @@ namespace Seismoscope.ViewModel
     public class DonneesCapteurViewModel : BaseViewModel, IParameterReceiver
     {
         private readonly IUserSessionService _userSession;
-        private readonly INavigationService _navigationService;
         private readonly ICapteurService _capteurService;
-        private readonly IStationService _stationService;
         private readonly IDialogService _dialogService;
 
+        public ICommand LireCSVCommand { get; }
+        public ICommand CommencerLectureCommand { get; }
 
         public ObservableCollection<Capteur> Capteurs { get; set; }
         public Capteur CapteurSelectionne { get; set; }
-        public Station NouvelleStation { get; set; }
-        public int NouveauStationId { get; set; }
-        public ICommand LireCSVCommand { get; }
-        public ICommand CommencerLectureCommand { get; }
+
 
         public const int Correction = 1000;
         public string Nom { get; set; }
@@ -42,19 +39,15 @@ namespace Seismoscope.ViewModel
 
 
         public DonneesCapteurViewModel(IUserSessionService userSession,
-            INavigationService navigationService,
             ICapteurService capteurService,
-            IStationService stationService,
             IDialogService dialogService)
         {
             _userSession = userSession;
-            _navigationService = navigationService;
             _capteurService = capteurService;
-            _stationService = stationService;
             _dialogService = dialogService;
 
             Capteurs = new ObservableCollection<Capteur>(_capteurService.ObtenirTous());
-            NouveauStationId = (int)_userSession.ConnectedUser.StationId;
+         
 
             LireCSVCommand = new RelayCommand(LireCsv);
             CommencerLectureCommand = new RelayCommand(async () => await LancerLectureAsync());
