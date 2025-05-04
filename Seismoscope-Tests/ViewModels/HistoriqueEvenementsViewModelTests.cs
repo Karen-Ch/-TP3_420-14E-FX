@@ -25,11 +25,11 @@ public class HistoriqueEvenementsViewModelTests
         _userMock.Object.StationId = 1;
 
         _evenementsMock = new List<EvenementSismique>
-            {
-                new EvenementSismique { Amplitude = 5.2, TypeOnde = TypeOnde.P },
-                new EvenementSismique { Amplitude = 6.8, TypeOnde = TypeOnde.S },
-                new EvenementSismique { Amplitude = 7.1, TypeOnde = TypeOnde.Surface }
-            };
+        {
+            new EvenementSismique { Amplitude = 5.2, TypeOnde = TypeOnde.P },
+            new EvenementSismique { Amplitude = 6.8, TypeOnde = TypeOnde.S },
+            new EvenementSismique { Amplitude = 7.1, TypeOnde = TypeOnde.Surface }
+        };
 
         _userSessionMock = new Mock<IUserSessionService>();
         _userSessionMock.Setup(u => u.ConnectedUser).Returns(_userMock.Object);
@@ -51,7 +51,7 @@ public class HistoriqueEvenementsViewModelTests
     [Test]
     public void Receive_ChargeEvenements()
     {
-        _viewModel.Receive(null);
+        _viewModel.Receive(1);
 
         Assert.That(_viewModel.Evenements.Count, Is.EqualTo(3));
         Assert.That(_viewModel.TousEvenements.Count, Is.EqualTo(3));
@@ -60,7 +60,7 @@ public class HistoriqueEvenementsViewModelTests
     [Test]
     public void FiltrerEvenements_AppliqueFiltrage()
     {
-        _viewModel.Receive(null);
+        _viewModel.Receive(1);
 
         _viewModel.TypeOndeSelectionne = TypeOnde.S;
         _viewModel.FiltrerCommand.Execute(null);
@@ -72,7 +72,7 @@ public class HistoriqueEvenementsViewModelTests
     [Test]
     public void ReinitialiserFiltre_AfficheTous()
     {
-        _viewModel.Receive(null);
+        _viewModel.Receive(1);
 
         _viewModel.TypeOndeSelectionne = TypeOnde.S;
         _viewModel.FiltrerCommand.Execute(null);

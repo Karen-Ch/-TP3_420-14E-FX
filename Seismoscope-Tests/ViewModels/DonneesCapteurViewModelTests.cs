@@ -3,100 +3,133 @@ using Seismoscope.Enums;
 using Seismoscope.Model;
 using Seismoscope.Utils.Services.Interfaces;
 using Seismoscope.ViewModel;
+using System.Collections.ObjectModel;
 
 namespace Seismoscope_Tests;
-
+[Apartment(System.Threading.ApartmentState.STA)]
 public class DonnesCapteurViewModelTests
 {
     private Mock<IUserSessionService> _userSessionMock;
-    private Mock<IStationService> _stationServiceMock;
-    private Mock<ICapteurService> _capteurServiceMock;
     private Mock<INavigationService> _navigationMock;
+    private Mock<ICapteurService> _capteurServiceMock;
+    private Mock<IStationService> _stationServiceMock;
     private Mock<IDialogService> _dialogServiceMock;
+    private Mock<IEvenementService> _evenementServiceMock;
 
     private DonneesCapteurViewModel _viewModel;
+    private Capteur _capteurTest;
 
     [SetUp]
     public void Setup()
     {
-        var capteurMock = new Mock<Capteur>();
-        capteurMock.SetupAllProperties();
-        capteurMock.Object.EstLivre = true;
-
-        var stationMock = new Mock<Station>();
-        stationMock.SetupAllProperties();
-        stationMock.Object.Id = 99;
-
-        var userMock = new Mock<User>();
-        userMock.SetupAllProperties();
-        userMock.Object.StationId = 99;
+        _capteurTest = new Capteur
+        {
+            Id = 1,
+            Nom = "CapteurTest",
+            FrequenceCollecte = 1,
+            SeuilAlerte = 10,
+            StationId = 2
+        };
 
         _userSessionMock = new Mock<IUserSessionService>();
-        _userSessionMock.SetupGet(s => s.ConnectedUser).Returns(userMock.Object);
-
-        _stationServiceMock = new Mock<IStationService>();
-        _stationServiceMock.Setup(s => s.ObtenirParId(99)).Returns(stationMock.Object);
-
-        _capteurServiceMock = new Mock<ICapteurService>();
-        _capteurServiceMock.Setup(s => s.ObtenirTous()).Returns(new List<Capteur> { capteurMock.Object });
-
         _navigationMock = new Mock<INavigationService>();
+        _capteurServiceMock = new Mock<ICapteurService>();
+        _stationServiceMock = new Mock<IStationService>();
         _dialogServiceMock = new Mock<IDialogService>();
+        _evenementServiceMock = new Mock<IEvenementService>();
+        _capteurServiceMock.Setup(c => c.ObtenirTous()).Returns(new List<Capteur> { _capteurTest });
 
         _viewModel = new DonneesCapteurViewModel(
             _userSessionMock.Object,
             _navigationMock.Object,
             _capteurServiceMock.Object,
             _stationServiceMock.Object,
-            _dialogServiceMock.Object
+            _dialogServiceMock.Object,
+            _evenementServiceMock.Object
         );
     }
 
-    //[Test]
-    //public void ValiderCapteurCommand_AvecCapteurLivre_AppelleModifierCapteurEtAfficheMessage()
-    //{
-    //    var capteurMock = new Mock<Capteur>();
-    //    capteurMock.SetupAllProperties();
-    //    capteurMock.Object.EstLivre = true;
+    [Test]
+    public void ArreterLecture_Sets_EstLectureEnCours_To_False()
+    {
+        _viewModel.EstLectureEnCours = true;
 
-    //    _viewModel.CapteurSelectionne = capteurMock.Object;
+        _viewModel.ArreterLecture();
 
-    //    _viewModel.ValiderCapteurCommand.Execute(null);
+        Assert.IsFalse(_viewModel.EstLectureEnCours);
+    }
 
-    //    _capteurServiceMock.Verify(s => s.ModifierCapteur(capteurMock.Object), Times.Once);
-    //    _dialogServiceMock.Verify(d => d.ShowMessage("Capteur ajouté !", ""), Times.Once);
-    //    Assert.That(capteurMock.Object.StationId, Is.EqualTo(99));
-    //}
+    [Test]
+    public void PeutCommencerLecture_True_When_CsvDonnees_Exists_And_NotEmpty()
+    {
+        _viewModel.CsvDonnees = new ObservableCollection<Tuple<string, double>>
+        {
+            Tuple.Create("P", 1.0)
+        };
+
+        Assert.That(_viewModel.PeutCommencerLecture, Is.True);
+    }
+
+    [Test]
+    public void PeutCommencerLecture_False_When_CsvDonnees_Null_Or_Empty()
+    {
+        _viewModel.CsvDonnees = null;
+        Assert.That(_viewModel.PeutCommencerLecture, Is.False);
+
+        _viewModel.CsvDonnees = new ObservableCollection<Tuple<string, double>>();
+        Assert.That(_viewModel.PeutCommencerLecture, Is.False);
+    }
+
+    [Test]
+    public async Task LancerLectureAsync_Sets_EstLectureEnCours_False_After_Run()
+    {
+        _viewModel.CsvDonnees = new ObservableCollection<Tuple<string, double>>
+        {
+            Tuple.Create("P", 5.0),
+            Tuple.Create("S", 15.0)
+        };
+        _viewModel.Receive(_capteurTest.Id);
+
+        await _viewModel.LancerLectureAsync();
+
+        Assert.That(_viewModel.EstLectureEnCours, Is.False);
+        Assert.That(_viewModel.ValeursAmplitude.Count, Is.EqualTo(2));
+        Assert.That(_viewModel.LabelsTemps.Count, Is.EqualTo(2));
+    }
+
+    [Test]
+    public async Task LancerLectureAsync_DeclencheEvenement_When_AmplitudeDepasseSeuil()
+    {
+        var capteurTest = new Capteur
+        {
+            Nom = "Capteur1",
+            SeuilAlerte = 5.0,
+            StationId = 1
+        };
+
+        _viewModel.CapteurSelectionne = capteurTest;
+        _viewModel.CsvDonnees = new ObservableCollection<Tuple<string, double>>
+        {
+            Tuple.Create("P", 10.0) 
+        };
+
+        await _viewModel.LancerLectureAsync();
+
+        _dialogServiceMock.Verify(d => d.ShowMessage(
+            It.Is<string>(msg => msg.Contains("événement sismique")),
+            It.IsAny<string>()), Times.Once);
+    }
 
 
-    //[Test]
-    //public void ValiderCapteurCommand_SansSelection_AfficheMessageCapteurNonLivre()
-    //{
-    //    _viewModel.CapteurSelectionne = null;
+    [Test]
+    public void Receive_Assigns_Properties_Correctly()
+    {
+        _capteurServiceMock.Setup(c => c.ObtenirParId(_capteurTest.Id)).Returns(_capteurTest);
 
-    //    _viewModel.ValiderCapteurCommand.Execute(null);
+        _viewModel.Receive(_capteurTest.Id);
 
-    //    _capteurServiceMock.Verify(s => s.ModifierCapteur(It.IsAny<Capteur>()), Times.Never);
-    //    _dialogServiceMock.Verify(d => d.ShowMessage("Veuillez sélectionner un capteur livré.", ""), Times.Once);
-    //}
+        Assert.That(_viewModel.Nom, Is.EqualTo(_capteurTest.Nom));
+        Assert.That(_viewModel.NouveauStationId, Is.EqualTo(_capteurTest.StationId));
 
-
-
-    //[Test]
-    //public void ValiderCapteurCommand_CapteurNonLivre_AfficheMessageErreur()
-    //{
-    //    var capteurMock = new Mock<Capteur>();
-    //    capteurMock.SetupAllProperties();
-    //    capteurMock.Object.EstLivre = false;
-
-    //    _viewModel.CapteurSelectionne = capteurMock.Object;
-
-    //    _viewModel.ValiderCapteurCommand.Execute(null);
-
-    //    _capteurServiceMock.Verify(s => s.ModifierCapteur(It.IsAny<Capteur>()), Times.Never);
-    //    _dialogServiceMock.Verify(d => d.ShowMessage("Veuillez sélectionner un capteur livré.", ""), Times.Once);
-    //}
-
-
-
+    }
 }
