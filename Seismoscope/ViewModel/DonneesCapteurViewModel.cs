@@ -15,6 +15,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 namespace Seismoscope.ViewModel
 {
@@ -27,6 +29,9 @@ namespace Seismoscope.ViewModel
         private readonly IDialogService _dialogService;
         private readonly IEvenementService _evenementService;
 
+        public SeriesCollection Series { get; set; } = new SeriesCollection();
+        public ChartValues<double> ValeursAmplitude { get; set; } = new ChartValues<double>();
+        public ObservableCollection<string> LabelsTemps { get; set; } = new ObservableCollection<string>();
 
 
         public ObservableCollection<Capteur> Capteurs { get; set; }
@@ -35,6 +40,8 @@ namespace Seismoscope.ViewModel
         public int NouveauStationId { get; set; }
         public ICommand LireCSVCommand { get; }
         public ICommand CommencerLectureCommand { get; }
+        public ICommand ArreterLectureCommand { get; }
+
 
         public const int Correction = 1000;
         public string Nom { get; set; }
@@ -43,6 +50,7 @@ namespace Seismoscope.ViewModel
         private double Intervalle { get; set; }
         public ObservableCollection<Tuple<string, double>> CsvDonnees { get; set; }
         public bool PeutCommencerLecture => CsvDonnees != null && CsvDonnees.Count > 0;
+        private bool _estLectureEnCours;
 
 
         public DonneesCapteurViewModel(IUserSessionService userSession,
@@ -61,10 +69,23 @@ namespace Seismoscope.ViewModel
 
 
             Capteurs = new ObservableCollection<Capteur>(_capteurService.ObtenirTous());
-
+            ArreterLectureCommand = new RelayCommand(ArreterLecture);
             LireCSVCommand = new RelayCommand(LireCsv);
             CommencerLectureCommand = new RelayCommand(async () => await LancerLectureAsync());
+            InitialiserGraphique();
         }
+        
+        public bool EstLectureEnCours
+        {
+            get => _estLectureEnCours;
+            set
+            {
+                _estLectureEnCours = value;
+                OnPropertyChanged(nameof(EstLectureEnCours));
+                OnPropertyChanged(nameof(PeutCommencerLecture)); 
+            }
+        }
+
         public void LireCsv()
         {
             var openFileDialog = new OpenFileDialog
@@ -124,17 +145,29 @@ namespace Seismoscope.ViewModel
         public async Task LancerLectureAsync()
         {
             var temps = (int)Intervalle * Correction;
+            int compteur = 0;
+            EstLectureEnCours = true;
+            ValeursAmplitude.Clear();
+            LabelsTemps.Clear();
             foreach (var tuple in CsvDonnees)
             {
+                if (!EstLectureEnCours)
+                    break;
                 Type = tuple.Item1;
                 Amplitude = tuple.Item2;
 
                 OnPropertyChanged(nameof(Type));
                 OnPropertyChanged(nameof(Amplitude));
+                ValeursAmplitude.Add(Amplitude);
+                LabelsTemps.Add($"t{compteur++}");
+
+                OnPropertyChanged(nameof(LabelsTemps));
+                OnPropertyChanged(nameof(ValeursAmplitude));
 
                 DetecterEvenement();
                 await Task.Delay(temps); 
             }
+            EstLectureEnCours = false;
         }
         private void DetecterEvenement()
         {
@@ -163,5 +196,22 @@ namespace Seismoscope.ViewModel
             if (_navigationService.CurrentView is HistoriqueEvenementsViewModel historiqueVm)
                 historiqueVm.Rafraichir();
         }
+        private void InitialiserGraphique()
+        {
+            Series.Add(new LineSeries
+            {
+                Title = "Amplitude",
+                Values = ValeursAmplitude,
+                PointGeometry = DefaultGeometries.Circle,
+                LineSmoothness = 0,
+                StrokeThickness = 2
+            });
+        }
+        public void ArreterLecture()
+        {
+            EstLectureEnCours = false;
+        }
+
+
     }
 }
