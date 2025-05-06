@@ -141,7 +141,8 @@ namespace Seismoscope.ViewModel
             });
             AllerVersHistoriqueCommand = new RelayCommand(() =>
             {
-                _navigationService.NavigateTo<HistoriqueEvenementsViewModel>();
+                _navigationService.NavigateTo<HistoriqueEvenementsViewModel>(NouvelleStation.Id);
+
             });
 
         }

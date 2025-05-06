@@ -49,6 +49,8 @@ namespace Seismoscope
             services.AddSingleton<IStationDAL, StationDAL>();
             services.AddSingleton<ICapteurDAL, CapteurDAL>();
             services.AddSingleton<IEvenementDAL, EvenementDAL>();
+            services.AddSingleton<IEvenementService, EvenementService>();
+
 
             services.AddSingleton<IUserDAL, UserDAL>();
             services.AddSingleton<INavigationService, NavigationService>();
