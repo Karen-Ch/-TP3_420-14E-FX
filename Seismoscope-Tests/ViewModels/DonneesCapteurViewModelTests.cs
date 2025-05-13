@@ -41,11 +41,10 @@ public class DonnesCapteurViewModelTests
 
         _viewModel = new DonneesCapteurViewModel(
             _userSessionMock.Object,
-            _navigationMock.Object,
             _capteurServiceMock.Object,
-            _stationServiceMock.Object,
             _dialogServiceMock.Object,
-            _evenementServiceMock.Object
+            _evenementServiceMock.Object,
+             _navigationMock.Object
         );
     }
 

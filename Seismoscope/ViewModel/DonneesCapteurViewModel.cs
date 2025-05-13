@@ -23,11 +23,10 @@ namespace Seismoscope.ViewModel
     public class DonneesCapteurViewModel : BaseViewModel, IParameterReceiver
     {
         private readonly IUserSessionService _userSession;
-        private readonly INavigationService _navigationService;
         private readonly ICapteurService _capteurService;
-        private readonly IStationService _stationService;
         private readonly IDialogService _dialogService;
         private readonly IEvenementService _evenementService;
+        private readonly INavigationService _navigationService;
 
         public SeriesCollection Series { get; set; } = new SeriesCollection();
         public ChartValues<double> ValeursAmplitude { get; set; } = new ChartValues<double>();
@@ -54,18 +53,17 @@ namespace Seismoscope.ViewModel
 
 
         public DonneesCapteurViewModel(IUserSessionService userSession,
-            INavigationService navigationService,
+           
             ICapteurService capteurService,
-            IStationService stationService,
             IDialogService dialogService,
-            IEvenementService evenementService)
+            IEvenementService evenementService,
+            INavigationService navigationService)
         {
             _userSession = userSession;
-            _navigationService = navigationService;
             _capteurService = capteurService;
-            _stationService = stationService;
             _dialogService = dialogService;
-            _evenementService= evenementService;    
+            _evenementService= evenementService;   
+            _navigationService = navigationService;
 
 
             Capteurs = new ObservableCollection<Capteur>(_capteurService.ObtenirTous());

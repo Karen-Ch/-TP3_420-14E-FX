@@ -9,7 +9,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodel:DonneesCapteurViewModel}"
         mc:Ignorable="d"
         Height="Auto" Width="Auto">
-    
+
     <UserControl.Resources>
         <LinearGradientBrush x:Key="HeaderBrush" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#673AB7" Offset="0"/>

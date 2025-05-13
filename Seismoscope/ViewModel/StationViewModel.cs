@@ -65,9 +65,9 @@ namespace Seismoscope.ViewModel
 
             TousCapteurs = new ObservableCollection<Capteur>(
                 _capteurService.ObtenirTous()
-                    .Where(c => c.EstLivre &&
-                                (c.StationId == null || c.StationId == 0) &&
-                                (c.DateInstallation == default || c.DateInstallation == DateTime.MinValue))
+                    //.Where(c => c.EstLivre &&
+                    //            (c.StationId == null || c.StationId == 0) &&
+                    //            (c.DateInstallation == default || c.DateInstallation == DateTime.MinValue))
             );
 
             ModifierCapteurCommand = new RelayCommand<Capteur>(capteur =>
