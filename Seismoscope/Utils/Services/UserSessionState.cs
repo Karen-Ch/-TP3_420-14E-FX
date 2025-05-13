@@ -4,7 +4,7 @@ using Seismoscope.Utils.Services.Interfaces;
 
 namespace Seismoscope.Utils.Services
 {
-    public class Service : IUserSessionService
+    public class UserSessionState : IUserSessionService
     {
         private User _connectedUser;
         public User ConnectedUser

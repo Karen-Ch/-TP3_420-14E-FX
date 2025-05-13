@@ -2,6 +2,7 @@
 using Seismoscope.Enums;
 using Seismoscope.Model;
 using Seismoscope.Utils.Services.Interfaces;
+using Seismoscope.Utils.Services.Interfaces.Seismoscope.Services.Interfaces;
 using Seismoscope.ViewModel;
 using System.Collections.ObjectModel;
 
@@ -15,6 +16,9 @@ public class DonnesCapteurViewModelTests
     private Mock<IStationService> _stationServiceMock;
     private Mock<IDialogService> _dialogServiceMock;
     private Mock<IEvenementService> _evenementServiceMock;
+    private Mock<IAjustementService> _ajustementServiceMock;
+    private Mock<IJournalService> _journalServiceMock;
+
 
     private DonneesCapteurViewModel _viewModel;
     private Capteur _capteurTest;
@@ -37,6 +41,10 @@ public class DonnesCapteurViewModelTests
         _stationServiceMock = new Mock<IStationService>();
         _dialogServiceMock = new Mock<IDialogService>();
         _evenementServiceMock = new Mock<IEvenementService>();
+        _ajustementServiceMock = new Mock<IAjustementService>();
+        _journalServiceMock = new Mock<IJournalService>();
+
+
         _capteurServiceMock.Setup(c => c.ObtenirTous()).Returns(new List<Capteur> { _capteurTest });
 
         _viewModel = new DonneesCapteurViewModel(
@@ -44,6 +52,8 @@ public class DonnesCapteurViewModelTests
             _capteurServiceMock.Object,
             _dialogServiceMock.Object,
             _evenementServiceMock.Object,
+            _ajustementServiceMock.Object,   
+            _journalServiceMock.Object , 
              _navigationMock.Object
         );
     }
