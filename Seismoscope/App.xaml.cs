@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using Seismoscope.View;
+using Seismoscope.Utils.Services.Interfaces.Seismoscope.Services.Interfaces;
 
 namespace Seismoscope
 {
@@ -50,11 +51,14 @@ namespace Seismoscope
             services.AddSingleton<ICapteurDAL, CapteurDAL>();
             services.AddSingleton<IEvenementDAL, EvenementDAL>();
             services.AddSingleton<IEvenementService, EvenementService>();
+            services.AddSingleton<IAjustementService, AjustementService>();
+            services.AddSingleton<IJournalService, JournalService>();
+
 
 
             services.AddSingleton<IUserDAL, UserDAL>();
             services.AddSingleton<INavigationService, NavigationService>();
-            services.AddSingleton<IUserSessionService, Service>();
+            services.AddSingleton<IUserSessionService, UserSessionState>();
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<Func<Type, BaseViewModel>>(serviceProvider =>
             {

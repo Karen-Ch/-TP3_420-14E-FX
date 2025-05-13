@@ -17,6 +17,7 @@ using System.Windows;
 using System.Windows.Input;
 using LiveCharts;
 using LiveCharts.Wpf;
+using Seismoscope.Utils.Services.Interfaces.Seismoscope.Services.Interfaces;
 
 namespace Seismoscope.ViewModel
 {
@@ -28,6 +29,9 @@ namespace Seismoscope.ViewModel
         private readonly IStationService _stationService;
         private readonly IDialogService _dialogService;
         private readonly IEvenementService _evenementService;
+        private readonly IAjustementService _ajustementService;
+        private readonly IJournalService _journalService;
+
 
         public SeriesCollection Series { get; set; } = new SeriesCollection();
         public ChartValues<double> ValeursAmplitude { get; set; } = new ChartValues<double>();
@@ -51,6 +55,8 @@ namespace Seismoscope.ViewModel
         public ObservableCollection<Tuple<string, double>> CsvDonnees { get; set; }
         public bool PeutCommencerLecture => CsvDonnees != null && CsvDonnees.Count > 0;
         private bool _estLectureEnCours;
+        private readonly List<double> _lecturesRecues = new();
+
 
 
         public DonneesCapteurViewModel(IUserSessionService userSession,
@@ -58,14 +64,18 @@ namespace Seismoscope.ViewModel
             ICapteurService capteurService,
             IStationService stationService,
             IDialogService dialogService,
-            IEvenementService evenementService)
+            IEvenementService evenementService,
+            IAjustementService ajustementService,
+            IJournalService journalService)
         {
             _userSession = userSession;
             _navigationService = navigationService;
             _capteurService = capteurService;
             _stationService = stationService;
             _dialogService = dialogService;
-            _evenementService= evenementService;    
+            _evenementService= evenementService;   
+            _ajustementService= ajustementService;
+            _journalService = journalService;   
 
 
             Capteurs = new ObservableCollection<Capteur>(_capteurService.ObtenirTous());
@@ -155,6 +165,8 @@ namespace Seismoscope.ViewModel
                     break;
                 Type = tuple.Item1;
                 Amplitude = tuple.Item2;
+                _lecturesRecues.Add(Amplitude);
+                _ajustementService.AppliquerRegles(CapteurSelectionne, _lecturesRecues);
 
                 OnPropertyChanged(nameof(Type));
                 OnPropertyChanged(nameof(Amplitude));
@@ -207,6 +219,8 @@ namespace Seismoscope.ViewModel
                 StrokeThickness = 2
             });
         }
+        public ObservableCollection<AjustementJournal> Journaux => _journalService.Journaux;
+
         public void ArreterLecture()
         {
             EstLectureEnCours = false;
