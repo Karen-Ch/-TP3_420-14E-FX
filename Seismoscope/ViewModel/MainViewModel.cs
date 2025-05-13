@@ -8,6 +8,7 @@ using Seismoscope.Utils.Commands;
 using Seismoscope.Utils.Services;
 using Seismoscope.Utils.Services.Interfaces;
 using Seismoscope.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace Seismoscope.ViewModel
 {
@@ -15,6 +16,7 @@ namespace Seismoscope.ViewModel
     {
         private readonly INavigationService _navigationService;
         private readonly IUserSessionService _userSessionService;
+        private readonly ILogger<MainViewModel> _logger;
 
         public INavigationService NavigationService
         {
@@ -56,16 +58,28 @@ namespace Seismoscope.ViewModel
             _navigationService.NavigateTo<ConnectUserViewModel>();
         }
 
-        public MainViewModel(INavigationService navigationService, IUserSessionService userSessionService)
+        public MainViewModel(INavigationService navigationService, IUserSessionService userSessionService, ILogger<MainViewModel>logger)
         {
             _navigationService = navigationService;
             _userSessionService = userSessionService;
+            _logger = logger;
 
             NavigateToConnectUserViewCommand = new RelayCommand(() => NavigationService.NavigateTo<ConnectUserViewModel>());
             NavigateToHomeViewCommand = new RelayCommand(NaviguerVersAccueil);
             DisconnectCommand = new RelayCommand(Disconnect, () => UserSessionService.IsUserConnected);
 
             NavigationService.NavigateTo<HomeViewModel>();
+            TesterLogger();
+        }
+
+        private void TesterLogger()
+        {
+            var user = _userSessionService.ConnectedUser;
+            _logger.LogInformation("Test log : opération normale");
+            _logger.LogTrace("Test log : utilisateur {User}", user);
+            _logger.LogWarning("Test log : comportament inattendu");
+            _logger.LogError("Test log : erreur critique");
+
         }
     }
 }

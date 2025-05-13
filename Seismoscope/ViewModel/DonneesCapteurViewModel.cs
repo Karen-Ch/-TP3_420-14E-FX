@@ -24,15 +24,12 @@ namespace Seismoscope.ViewModel
     public class DonneesCapteurViewModel : BaseViewModel, IParameterReceiver
     {
         private readonly IUserSessionService _userSession;
-        private readonly INavigationService _navigationService;
         private readonly ICapteurService _capteurService;
-        private readonly IStationService _stationService;
         private readonly IDialogService _dialogService;
         private readonly IEvenementService _evenementService;
         private readonly IAjustementService _ajustementService;
         private readonly IJournalService _journalService;
-
-
+        private readonly INavigationService _navigationService;
         public SeriesCollection Series { get; set; } = new SeriesCollection();
         public ChartValues<double> ValeursAmplitude { get; set; } = new ChartValues<double>();
         public ObservableCollection<string> LabelsTemps { get; set; } = new ObservableCollection<string>();
@@ -60,24 +57,20 @@ namespace Seismoscope.ViewModel
 
 
         public DonneesCapteurViewModel(IUserSessionService userSession,
-            INavigationService navigationService,
             ICapteurService capteurService,
-            IStationService stationService,
             IDialogService dialogService,
             IEvenementService evenementService,
             IAjustementService ajustementService,
-            IJournalService journalService)
+            IJournalService journalService,
+            INavigationService navigationService)
         {
             _userSession = userSession;
-            _navigationService = navigationService;
             _capteurService = capteurService;
-            _stationService = stationService;
             _dialogService = dialogService;
             _evenementService= evenementService;   
             _ajustementService= ajustementService;
             _journalService = journalService;   
-
-
+            _navigationService = navigationService;
             Capteurs = new ObservableCollection<Capteur>(_capteurService.ObtenirTous());
             ArreterLectureCommand = new RelayCommand(ArreterLecture);
             LireCSVCommand = new RelayCommand(LireCsv);
