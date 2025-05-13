@@ -53,12 +53,11 @@ namespace Seismoscope.ViewModel
 
 
         public DonneesCapteurViewModel(IUserSessionService userSession,
-            INavigationService @object,
+           
             ICapteurService capteurService,
-            IStationService stationService,
             IDialogService dialogService,
-            INavigationService navigationService,
-            IEvenementService evenementService)
+            IEvenementService evenementService,
+            INavigationService navigationService)
         {
             _userSession = userSession;
             _capteurService = capteurService;
