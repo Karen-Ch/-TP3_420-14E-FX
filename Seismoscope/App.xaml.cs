@@ -46,14 +46,21 @@ namespace Seismoscope
             services.AddSingleton<CarteViewModel>(); 
             services.AddSingleton<StationViewModel>();
             services.AddSingleton<CapteurViewModel>();
+
+            services.AddSingleton<HistoriqueEvenementsViewModel>();
+
             services.AddSingleton<DonneesCapteurViewModel>();
             services.AddSingleton<IStationService, StationService>();
             services.AddSingleton<ICapteurService, CapteurService>();
             services.AddSingleton<IUserSessionService, UserSessionService>();
             services.AddSingleton<IDialogService, DialogService>();
+            services.AddSingleton<IEvenementService, EvenementService>();
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<IStationDAL, StationDAL>();
             services.AddSingleton<ICapteurDAL, CapteurDAL>();
+            services.AddSingleton<IEvenementDAL, EvenementDAL>();
+            services.AddSingleton<IEvenementService, EvenementService>();
+
 
             services.AddSingleton<IUserDAL, UserDAL>();
             services.AddSingleton<INavigationService, NavigationService>();
