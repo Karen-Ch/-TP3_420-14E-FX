@@ -22,25 +22,15 @@ namespace Seismoscope.ViewModel
         private readonly IDialogService _dialogService;
 
         public ICommand SauvegarderModificationsCommand => new RelayCommand(SauvegarderModifications);
-        public ICommand ToggleActivationCommand => new RelayCommand(ToggleActivation);
+        
 
         public int Id { get; set; }
         public string Nom { get; set; }
-        public string Type { get; set; }
-        public Etat Statut { get; set; }
-
-    
-
+        public string Localisation { get; set; }
+        public string Code { get; set; }
+        public string Responsable { get; set; }
+        public Etat Etat { get; set; }
         public DateTime DateInstallation { get; set; }
-
-        private bool _estDesactive;
-        public bool EstDesactive
-        {
-            get => _estDesactive;
-            set { _estDesactive = value; OnPropertyChanged(); }
-        }
-
-    
 
         public ObservableCollection<Station> Stations{ get; set; } = new();
 
@@ -51,75 +41,52 @@ namespace Seismoscope.ViewModel
             IDialogService dialogService)
         {
             _userSession = userSession;
-            _capteurService = capteurService;
+            _stationService = stationService;
             _navigation = navigation;
             _dialogService = dialogService;
         }
 
-    public void Receive(object parameter)
-    {
-        if (parameter is int capteurId)
+        public void Receive(object parameter)
         {
-            var capteur = _capteurService.ObtenirParId(capteurId);
-            if (capteur != null)
+            if (parameter is int stationId)
             {
-                Id = capteur.Id;
-                Nom = capteur.Nom;
-                Type = capteur.Type;
-                Statut = capteur.Statut;
-                FrequenceCollecte = capteur.FrequenceCollecte;
-                SeuilAlerte = capteur.SeuilAlerte;
-                DateInstallation = capteur.DateInstallation;
-                EstDesactive = capteur.EstDesactive;
-                EstLivre = capteur.EstLivre;
-                StationId = capteur.StationId;
+                var station = _stationService.ObtenirParId(stationId);
+                if (station != null)
+                {
+                    Id = station.Id;
+                    Nom = station.Nom;
+                    Localisation = station.Localisation;
+                    Responsable = station.Responsable;
+                    Code = station.Code;
+                    Etat = station.Etat;
+                    DateInstallation = station.DateInstallation;
+                
 
-                OnPropertyChanged(nameof(Nom));
-                OnPropertyChanged(nameof(Type));
-                OnPropertyChanged(nameof(Statut));
-                OnPropertyChanged(nameof(DateInstallation));
-                OnPropertyChanged(nameof(EstLivre));
-                OnPropertyChanged(nameof(StationId));
+                    OnPropertyChanged(nameof(Nom));
+                    OnPropertyChanged(nameof(Localisation));
+                    OnPropertyChanged(nameof(Responsable));
+                    OnPropertyChanged(nameof(Code));
+                    OnPropertyChanged(nameof(Etat));
+                    OnPropertyChanged(nameof(DateInstallation));
+                }
             }
         }
-    }
-
-    private void ToggleActivation()
-    {
-        EstDesactive = !EstDesactive;
-        var capteur = _capteurService.ObtenirParId(Id);
-        if (capteur != null)
+   
+        private void SauvegarderModifications()
         {
-            capteur.EstDesactive = EstDesactive;
-            _capteurService.ModifierCapteur(capteur);
-            _dialogService.ShowMessage("Statut du capteur mis à jour.", "Succès");
-            _navigation.NavigateTo<StationViewModel>();
+             var utilisateur = _userSession.ConnectedUser;
+            if (utilisateur.Role is Role.Administrateur) {
+                var station = _stationService.ObtenirParId(Id);
+                if (station != null)
+                {
+                    station.Responsable = Responsable;
+                    station.DateInstallation = DateInstallation;
+                    station.Etat = Etat;
+                    _stationService.ModifierStation(station);
+                    _dialogService.ShowMessage("Paramètres de la station mis à jour avec succès.", "Succès");
+                    _navigation.NavigateTo<StationViewModel>();
+                }
+            }
         }
-    }
-
-    private void SauvegarderModifications()
-    {
-        if (FrequenceCollecte <= 0)
-        {
-            _dialogService.ShowMessage("La fréquence de collecte doit être un nombre positif.", "Valeur invalide");
-            return;
-        }
-
-        if (SeuilAlerte <= 0)
-        {
-            _dialogService.ShowMessage("Le seuil d’alerte doit être un nombre positif.", "Valeur invalide");
-            return;
-        }
-
-        var capteur = _capteurService.ObtenirParId(Id);
-        if (capteur != null)
-        {
-            capteur.FrequenceCollecte = FrequenceCollecte;
-            capteur.SeuilAlerte = SeuilAlerte;
-            _capteurService.ModifierCapteur(capteur);
-            _dialogService.ShowMessage("Paramètres mis à jour avec succès.", "Succès");
-            _navigation.NavigateTo<StationViewModel>();
-        }
-    }
-}
+    } 
 }

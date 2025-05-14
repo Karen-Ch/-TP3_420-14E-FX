@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Seismoscope.Model.DAL;
 
 namespace Seismoscope.Utils.Services
 {
@@ -26,6 +27,11 @@ namespace Seismoscope.Utils.Services
         public List<Station> ObtenirToutesAvecCapteurs()
         {
             return _stationDal.FindAll();
+        }
+
+        void IStationService.ModifierStation(Seismoscope.Model.Station station)
+        {
+            _stationDal.UpdateStation(station);
         }
     }
 }
