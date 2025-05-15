@@ -64,8 +64,7 @@ namespace Seismoscope
             services.AddSingleton<IEvenementService, EvenementService>();
             services.AddSingleton<IAjustementService, AjustementService>();
             services.AddSingleton<IJournalService, JournalService>();
-
-
+            services.AddSingleton<IConfigurationService, ConfigurationService>();
 
             services.AddSingleton<IUserDAL, UserDAL>();
             services.AddSingleton<INavigationService, NavigationService>();

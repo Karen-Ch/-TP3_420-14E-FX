@@ -11,5 +11,7 @@ namespace Seismoscope.Utils.Services.Interfaces
         string GetDbPath();
         string GetDefaultAdminUserName();
         string GetDefaultAdminPassword();
+        string GetDefaultEmployeUserName();      
+        string GetDefaultEmployePassword();
     }
 }

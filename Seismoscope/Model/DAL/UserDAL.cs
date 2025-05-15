@@ -17,9 +17,16 @@ namespace Seismoscope.Model.DAL
 
         public User? Authentifier(string nomUtilisateur, string motDePasse)
         {
-            string hash = Securite.HasherMotDePasse(motDePasse);
-            return _context.Users
-                .FirstOrDefault(u => u.NomUtilisateur == nomUtilisateur && u.MotDePasse == hash);
+            var user = _context.Users
+                .FirstOrDefault(user => user.NomUtilisateur == nomUtilisateur);
+
+            if (user == null)
+                return null;
+
+            bool motDePasseValide = Securite.VerifierMotDePasse(motDePasse, user.MotDePasse);
+
+            return motDePasseValide ? user : null;
         }
+
     }
 }

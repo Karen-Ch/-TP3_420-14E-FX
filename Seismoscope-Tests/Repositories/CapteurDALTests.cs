@@ -2,6 +2,8 @@
 using Seismoscope.Enums;
 using Seismoscope.Model.DAL;
 using Seismoscope.Model;
+using Moq;
+using Seismoscope.Utils.Services.Interfaces;
 
 namespace Seismoscope_Tests;
 
@@ -18,7 +20,9 @@ public class CapteurDALTests
             .EnableSensitiveDataLogging()
             .Options;
 
-        _context = new ApplicationDbContext(options);
+        var ConfigService = new Mock<IConfigurationService>();
+        ConfigService.Setup(c => c.GetDbPath()).Returns("chemin/test.db");
+        _context = new ApplicationDbContext(options, ConfigService.Object);
         _capteurDAL = new CapteurDAL(_context);
     }
 

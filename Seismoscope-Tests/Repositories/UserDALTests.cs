@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Moq;
 using Seismoscope.Enums;
 using Seismoscope.Model.DAL;
 using Seismoscope.Utils;
+using Seismoscope.Utils.Services.Interfaces;
 
 namespace Seismoscope_Tests;
 
@@ -17,8 +19,9 @@ public class UserDALTests
             .UseInMemoryDatabase(databaseName: "TestDb_User")
             .EnableSensitiveDataLogging()
             .Options;
-
-        _context = new ApplicationDbContext(options);
+        var ConfigService = new Mock<IConfigurationService>();
+        ConfigService.Setup(c => c.GetDbPath()).Returns("chemin/test.db");
+        _context = new ApplicationDbContext(options, ConfigService.Object);
         _userDAL = new UserDAL(_context);
     }
 

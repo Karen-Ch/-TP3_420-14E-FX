@@ -23,6 +23,15 @@ namespace Seismoscope.Utils.Services
         public string GetDefaultAdminPassword()
         {
             return ConfigurationManager.AppSettings["AdminPassword"];
-        }   
+        }
+        public string GetDefaultEmployeUserName()
+        {
+            return ConfigurationManager.AppSettings["EmployeUserName"];
+        }
+
+        public string GetDefaultEmployePassword()
+        {
+            return ConfigurationManager.AppSettings["EmployePassword"];
+        }
     }
 }

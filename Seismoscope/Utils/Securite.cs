@@ -11,12 +11,11 @@ namespace Seismoscope.Utils
     {
         public static string HasherMotDePasse(string motDePasse)
         {
-            using (SHA256 sha = SHA256.Create())
-            {
-                byte[] motBytes = Encoding.UTF8.GetBytes(motDePasse);
-                byte[] hashBytes = sha.ComputeHash(motBytes);
-                return Convert.ToBase64String(hashBytes);
-            }
+            return BCrypt.Net.BCrypt.HashPassword(motDePasse);
+        }
+        public static bool VerifierMotDePasse(string motDePasse, string hash)
+        {
+            return BCrypt.Net.BCrypt.Verify(motDePasse, hash);
         }
     }
 }

@@ -3,6 +3,7 @@ using Seismoscope.Enums;
 using Seismoscope.Model;
 using Seismoscope.Utils;
 using Seismoscope.Utils.Services;
+using Seismoscope.Utils.Services.Interfaces;
 using System.IO;
 
 public class ApplicationDbContext : DbContext
@@ -11,10 +12,13 @@ public class ApplicationDbContext : DbContext
     public DbSet<Station> Stations { get; set; } = null!;
     public DbSet<Capteur> Capteurs { get; set; } = null!;
     public DbSet<EvenementSismique> Evenements { get; set; }
+    private readonly IConfigurationService _configurationService;
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+  
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfigurationService configurationService)
     : base(options)
     {
+        _configurationService = configurationService;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -109,30 +113,41 @@ public class ApplicationDbContext : DbContext
         );
     }
 
-    if (!Users.Any())
-    {
-        Users.AddRange(
-            new User
+        if (!Users.Any())
+        {
+
+            var employeUsername = _configurationService.GetDefaultEmployeUserName();
+            var employePassword = _configurationService.GetDefaultEmployePassword();
+            var hashedEmployePassword = BCrypt.Net.BCrypt.HashPassword(employePassword);
+
+            var employeUser = new User
             {
                 Prenom = "John",
                 Nom = "Doe",
-                NomUtilisateur = "johndoe",
-                MotDePasse = Securite.HasherMotDePasse("password123"),
+                NomUtilisateur = employeUsername,
+                MotDePasse = hashedEmployePassword,
                 Role = Role.Employe,
-                StationId = 1 
-            },
-            new User
+                StationId = 1
+            };
+
+            var adminUsername = _configurationService.GetDefaultAdminUserName();
+            var adminPassword = _configurationService.GetDefaultAdminPassword();
+            var hashedAdminPassword = BCrypt.Net.BCrypt.HashPassword(adminPassword);
+
+            var adminUser = new User
             {
                 Prenom = "Jane",
                 Nom = "Doe",
-                NomUtilisateur = "janedoe",
-                MotDePasse = Securite.HasherMotDePasse("password123"),
+                NomUtilisateur = adminUsername,
+                MotDePasse = hashedAdminPassword,
                 Role = Role.Administrateur,
                 StationId = null
-            }
-        );
-    }
-    if (!Capteurs.Any())
+            };
+
+            Users.AddRange(employeUser, adminUser);
+            SaveChanges();
+        }
+        if (!Capteurs.Any())
 {
     Capteurs.AddRange(
         new Capteur

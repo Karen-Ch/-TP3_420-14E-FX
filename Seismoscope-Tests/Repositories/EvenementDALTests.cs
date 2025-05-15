@@ -3,6 +3,8 @@ using Seismoscope.Model.DAL;
 using Seismoscope.Model;
 using Seismoscope.Enums;
 using System;
+using Moq;
+using Seismoscope.Utils.Services.Interfaces;
 
 namespace Seismoscope_Tests;
 
@@ -19,7 +21,9 @@ public class EvenementDALTests
             .EnableSensitiveDataLogging()
             .Options;
 
-        _context = new ApplicationDbContext(options);
+        var ConfigService = new Mock<IConfigurationService>();
+        ConfigService.Setup(c => c.GetDbPath()).Returns("chemin/test.db");
+        _context = new ApplicationDbContext(options, ConfigService.Object);
         _evenementDal = new EvenementDAL(_context);
     }
 
