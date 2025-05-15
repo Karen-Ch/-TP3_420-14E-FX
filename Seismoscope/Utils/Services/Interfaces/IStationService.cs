@@ -11,5 +11,6 @@ namespace Seismoscope.Utils.Services.Interfaces
     {
         Station? ObtenirParId(int id);
         List<Station> ObtenirToutesAvecCapteurs();
+        void ModifierStation(Station station);
     }
 }

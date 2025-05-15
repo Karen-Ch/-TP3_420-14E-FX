@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Seismoscope"
              xmlns:utils="clr-namespace:Seismoscope.Utils.AttachedProperties"
+
              xmlns:viewModel="clr-namespace:Seismoscope.ViewModel" d:DataContext="{d:DesignInstance Type=viewModel:StationViewModel}"
              mc:Ignorable="d"   >
     
@@ -58,12 +59,20 @@
                     </Grid>
                 </Grid>
                 <Button Content="Voir l'historique des événements"
-                Command="{Binding AllerVersHistoriqueCommand}"
-                Background="LightGreen"
-                Width="250"
-                Height="40"
-                Margin="10"
-                HorizontalAlignment="Center"/>
+                    Command="{Binding AllerVersHistoriqueCommand}"
+                    Background="LightGreen"
+                    Width="250"
+                    Height="40"
+                    Margin="10"
+                    HorizontalAlignment="Center"/>
+                <Button Content="Modifier Station"
+                    Command="{Binding DataContext.ModifierStationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding DataContext.NouvelleStation, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Background="LightSteelBlue"
+                    Width="250"
+                    Height="40"
+                    Margin="10"
+                    HorizontalAlignment="Center"/>
 
                 <TextBlock Text="Capteurs associés :" FontWeight="Bold" FontSize="16" Margin="5,10,0,5"/>
                     <ItemsControl Margin="10,5,10,5" ItemsSource="{Binding Capteurs}">
@@ -190,9 +199,7 @@
                                  Height="30" 
                                  HorizontalAlignment="Center"
                                  VerticalAlignment="Center"
-                                 Visibility="{Binding DataContext.NePasAdmin, 
-                                       RelativeSource={RelativeSource AncestorType=UserControl}, 
-                                       Converter={StaticResource BoolToVisibilityConverter}}"
+                                 
                                 Command="{Binding DataContext.AjouterCapteurCommand, 
                                        RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 CommandParameter="{Binding DataContext.CapteurSelectionne, 

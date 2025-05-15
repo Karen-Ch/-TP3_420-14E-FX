@@ -36,8 +36,13 @@
                 <view:DonneesCapteurView/>
 
             </DataTemplate>
+            <DataTemplate DataType="{x:Type TypeName=viewModel:ModifierStationViewModel}">
+                <view:ModifierStationView/>
+
+            </DataTemplate>
 
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:EtatToBoolConverter x:Key="EtatToBoolConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

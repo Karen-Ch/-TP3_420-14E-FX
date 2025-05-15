@@ -10,6 +10,7 @@ namespace Seismoscope.Model.Interfaces
     {
         Station? FindById(int id);
         List<Station> FindAll();
+        void UpdateStation(Station? station);
         //Station? FindById(Station? nouvelleStation);
     }
 }

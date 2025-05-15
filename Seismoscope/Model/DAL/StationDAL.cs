@@ -39,6 +39,17 @@ namespace Seismoscope.Model.DAL
             return _context.Stations.ToList();
         }
 
-
+        public void UpdateStation(Station? station)
+        {
+            if (station != null)
+            {
+                _context.Stations.Update(station);
+                _context.SaveChanges();
+            }
+            else
+            {
+                throw new NullReferenceException();
+            }
+        }
     }
 }
