@@ -20,5 +20,10 @@ namespace Seismoscope.Model
         public bool EstLivre { get; set; }
         public int? StationId { get; set; }
         public Station Station { get; set; }
+        public double SeuilMin { get; set; }
+        public double SeuilMax { get; set; }
+        public double FrequenceParDefaut { get; set; }
+        public double FrequenceMinimale { get; set; }
+        public DateTime? DernierEvenement { get; set; }
     }
 }

@@ -9,7 +9,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodel:DonneesCapteurViewModel}"
         mc:Ignorable="d"
         Height="Auto" Width="Auto">
-    
+
     <UserControl.Resources>
         <LinearGradientBrush x:Key="HeaderBrush" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#673AB7" Offset="0"/>
@@ -141,6 +141,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Border Grid.Row="0" Background="{StaticResource HeaderBrush}" CornerRadius="8,8,0,0" Padding="16">
@@ -254,6 +255,25 @@
                             </lvc:CartesianChart>
                         </Grid>
                     </Border>
+                    <Border Grid.Row="3" Style="{StaticResource CardStyle}" Margin="8,4,8,8">
+                        <StackPanel>
+                            <TextBlock Text="JOURNAL DES AJUSTEMENTS AUTOMATIQUES"
+                                    Style="{StaticResource SectionTitleStyle}"
+                                    Margin="0,0,0,8"/>
+                            
+                            <ListView ItemsSource="{Binding Journaux}" Height="200">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Date" Width="150" DisplayMemberBinding="{Binding Date}" />
+                                        <GridViewColumn Header="Capteur" Width="80" DisplayMemberBinding="{Binding CapteurId}" />
+                                        <GridViewColumn Header="Règle appliquée" Width="200" DisplayMemberBinding="{Binding RègleAppliquée}" />
+                                        <GridViewColumn Header="Détail" Width="400" DisplayMemberBinding="{Binding Détail}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </StackPanel>
+                    </Border>
+
                 </Grid>
             </Border>
         </ScrollViewer>

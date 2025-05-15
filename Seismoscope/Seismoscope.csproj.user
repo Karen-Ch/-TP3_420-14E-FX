@@ -33,6 +33,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Nlog.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="View\DonneesCapteurView.xaml">
       <SubType>Designer</SubType>
     </Page>

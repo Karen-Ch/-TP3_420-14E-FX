@@ -10,6 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using Seismoscope.View;
+using Seismoscope.Utils.Services.Interfaces.Seismoscope.Services.Interfaces;
+using NLog;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 
 namespace Seismoscope
 {
@@ -21,10 +25,17 @@ namespace Seismoscope
             // Note à moi-même, mieux séparer en fonctions ici. 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory());
-            IConfiguration configuration = builder.Build();
 
+            IConfiguration configuration = builder.Build();
             IServiceCollection services = new ServiceCollection();
 
+            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration("../../../NLog.config");
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders();
+                loggingBuilder.AddNLog();
+            });
+            
             services.AddSingleton<MainWindow>(provider => new MainWindow
             {
                 DataContext = provider.GetRequiredService<MainViewModel>()
@@ -51,11 +62,14 @@ namespace Seismoscope
             services.AddSingleton<ICapteurDAL, CapteurDAL>();
             services.AddSingleton<IEvenementDAL, EvenementDAL>();
             services.AddSingleton<IEvenementService, EvenementService>();
+            services.AddSingleton<IAjustementService, AjustementService>();
+            services.AddSingleton<IJournalService, JournalService>();
+
 
 
             services.AddSingleton<IUserDAL, UserDAL>();
             services.AddSingleton<INavigationService, NavigationService>();
-            services.AddSingleton<IUserSessionService, Service>();
+            services.AddSingleton<IUserSessionService, UserSessionState>();
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<Func<Type, BaseViewModel>>(serviceProvider =>
             {
