@@ -76,7 +76,7 @@ namespace Seismoscope.ViewModel
                 _navigationService.NavigateTo<CapteurViewModel>(capteur.Id);
             });
 
-            ModifierStationCommand = new RelayCommand<Capteur>(station =>
+            ModifierStationCommand = new RelayCommand<Station>(station =>
             {
                 _navigationService.NavigateTo<ModifierStationViewModel>(station.Id);
             });

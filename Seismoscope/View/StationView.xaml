@@ -6,9 +6,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Seismoscope"
              xmlns:utils="clr-namespace:Seismoscope.Utils.AttachedProperties"
-             xmlns:viewModel="clr-namespace:Seismoscope.ViewModel"
-            mc:Ignorable="d"   >
-    
+             xmlns:viewModel="clr-namespace:Seismoscope.ViewModel" xmlns:local1="clr-namespace:Seismoscope.Utils.Converters"
+             mc:Ignorable="d"   >
+    <UserControl.Resources>
+
+        <local1:EtatToBoolConverter x:Key="BoolToVisibilityConverter" />
+    </UserControl.Resources>
+
     <Grid Background="WhiteSmoke" >
 
         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -66,7 +70,7 @@
                     HorizontalAlignment="Center"/>
                 <Button Content="Modifier Station"
                     Command="{Binding DataContext.ModifierStationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                    CommandParameter="{Binding}"
+                    CommandParameter="{Binding DataContext.NouvelleStation, RelativeSource={RelativeSource AncestorType=UserControl}}"
                     Background="LightSteelBlue"
                     Width="250"
                     Height="40"
@@ -198,9 +202,7 @@
                                  Height="30" 
                                  HorizontalAlignment="Center"
                                  VerticalAlignment="Center"
-                                 Visibility="{Binding DataContext.NePasAdmin, 
-                                       RelativeSource={RelativeSource AncestorType=UserControl}, 
-                                       Converter={StaticResource BoolToVisibilityConverter}}"
+                                 
                                 Command="{Binding DataContext.AjouterCapteurCommand, 
                                        RelativeSource={RelativeSource AncestorType=UserControl}}"
                                 CommandParameter="{Binding DataContext.CapteurSelectionne, 

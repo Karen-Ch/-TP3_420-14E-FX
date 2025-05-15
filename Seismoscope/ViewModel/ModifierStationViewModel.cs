@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -31,6 +32,7 @@ namespace Seismoscope.ViewModel
         public string Responsable { get; set; }
         public Etat Etat { get; set; }
         public DateTime DateInstallation { get; set; }
+        public Station NouvelleStation {  get; set; }
 
         public ObservableCollection<Station> Stations{ get; set; } = new();
 
@@ -50,42 +52,59 @@ namespace Seismoscope.ViewModel
         {
             if (parameter is int stationId)
             {
-                var station = _stationService.ObtenirParId(stationId);
-                if (station != null)
-                {
-                    Id = station.Id;
-                    Nom = station.Nom;
-                    Localisation = station.Localisation;
-                    Responsable = station.Responsable;
-                    Code = station.Code;
-                    Etat = station.Etat;
-                    DateInstallation = station.DateInstallation;
-                
-
-                    OnPropertyChanged(nameof(Nom));
-                    OnPropertyChanged(nameof(Localisation));
-                    OnPropertyChanged(nameof(Responsable));
-                    OnPropertyChanged(nameof(Code));
-                    OnPropertyChanged(nameof(Etat));
-                    OnPropertyChanged(nameof(DateInstallation));
-                }
+                Station? station = _stationService.ObtenirParId(stationId);
+                NouvelleStation = station;
+                Nom = station.Nom;
+                Localisation = station.Localisation;
+                Code = station.Code;
+                Responsable = station.Responsable;
+                Etat = station.Etat;
+                DateInstallation = station.DateInstallation;
+   
+                OnPropertyChanged(nameof(Nom));
+                OnPropertyChanged(nameof(Localisation));
+                OnPropertyChanged(nameof(Code));
+                OnPropertyChanged(nameof(Responsable));
+                OnPropertyChanged(nameof(Etat));
+                OnPropertyChanged(nameof(DateInstallation));
             }
         }
    
         private void SauvegarderModifications()
         {
              var utilisateur = _userSession.ConnectedUser;
+            Console.WriteLine("Début SauvegarderModifications");
             if (utilisateur.Role is Role.Administrateur) {
-                var station = _stationService.ObtenirParId(Id);
-                if (station != null)
+                try
                 {
-                    station.Responsable = Responsable;
-                    station.DateInstallation = DateInstallation;
-                    station.Etat = Etat;
-                    _stationService.ModifierStation(station);
-                    _dialogService.ShowMessage("Paramètres de la station mis à jour avec succès.", "Succès");
-                    _navigation.NavigateTo<StationViewModel>();
+                    Console.WriteLine($"Rôle OK: {utilisateur.Role}");
+                    
+                    if (NouvelleStation != null)
+                    {
+                        NouvelleStation.Responsable = Responsable;
+                        NouvelleStation.DateInstallation = DateInstallation;
+                        NouvelleStation.Etat = Etat;
+                        Console.WriteLine("Avant ModifierStation");
+                        Console.WriteLine("Après ModifierStation");
+                        _stationService.ModifierStation(NouvelleStation);
+                        _dialogService.ShowMessage("Paramètres de la station mis à jour avec succès.", "Succès");
+                        _navigation.NavigateTo<StationViewModel>();
+
+                    }
+                   else
+                    {
+                        _dialogService.ShowMessage("Erreur inattendue, essayer à nouveau .", "Erreur");
+                    }  
                 }
+                catch (Exception ex) {
+                    Console.WriteLine($"Erreur inattendue: {ex.Message}");
+                   
+                }
+                
+            }
+            else
+            {
+                _dialogService.ShowMessage("Accès non autorisé .", "Erreur");
             }
         }
     } 

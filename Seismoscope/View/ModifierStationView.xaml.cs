@@ -17,7 +17,7 @@ namespace Seismoscope.View
     /// <summary>
     /// Logique d'interaction pour ModifierStationView.xaml
     /// </summary>
-    public partial class ModifierStationView : Window
+    public partial class ModifierStationView : UserControl
     {
         public ModifierStationView()
         {
